@@ -134,6 +134,7 @@ Citizen.CreateThread(function()
 
 				DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
 				DrawScaleformMovie(scaleform2, 0.5, 0.63, 1.0, 1.0, 255, 255, 255, 255)
+				Breaking("BREAKING NEWS")
 				
 				local camHeading = GetGameplayCamRelativeHeading()
 				local camPitch = GetGameplayCamRelativePitch()
@@ -278,6 +279,19 @@ AddEventHandler("Mic:ToggleMic", function()
         usingMic = false
     end
 end)
+
+function Breaking(text)
+		SetTextColour(255, 255, 255, 255)
+		SetTextFont(8)
+		SetTextScale(1.2, 1.2)
+		SetTextWrap(0.0, 1.0)
+		SetTextCentre(false)
+		SetTextDropshadow(0, 0, 0, 0, 255)
+		SetTextEdge(1, 0, 0, 0, 205)
+		SetTextEntry("STRING")
+		AddTextComponentString(text)
+		DrawText(0.2, 0.85)
+end
 
 function Notification(message)
 	SetNotificationTextEntry("STRING")
