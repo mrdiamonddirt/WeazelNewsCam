@@ -124,6 +124,8 @@ Citizen.CreateThread(function()
 					camera = false
 				end
 
+				SetEntityRotation(lPed, 0, 0, new_z,2, true)
+					
 				local zoomvalue = (1.0/(fov_max-fov_min))*(fov-fov_min)
 				CheckInputRotation(cam, zoomvalue)
 
