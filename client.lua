@@ -10,6 +10,10 @@ local micanimDict = "missheistdocksprep1hold_cellphone"
 local micanimName = "hold_cellphone"
 local mic_net = nil
 local cam_net = nil
+local UI = { 
+	x =  0.000 ,
+	y = -0.001 ,
+}
 
 ---------------------------------------------------------------------------
 -- Toggling Cam --
@@ -34,7 +38,7 @@ AddEventHandler("Cam:ToggleCam", function()
         TaskPlayAnim(GetPlayerPed(PlayerId()), camanimDict, camanimName, 1.0, -1, -1, 50, 0, 0, 0, 0)
         cam_net = netid
         holdingCam = true
-		DisplayNotification("To enter camera mode press ~INPUT_PICKUP~ ")
+		DisplayNotification("To enter News cam press ~INPUT_PICKUP~ To Enter Movie Cam press ~INPUT_INTERACTION_MENU~")
     else
         ClearPedSecondaryTask(GetPlayerPed(PlayerId()))
         DetachEntity(NetToObj(cam_net), 1, 1)
@@ -76,7 +80,96 @@ local camera = false
 local fov = (fov_max+fov_min)*0.5
 
 ---------------------------------------------------------------------------
--- Threads --
+-- Movie Cam --
+---------------------------------------------------------------------------
+
+Citizen.CreateThread(function()
+	while true do
+
+		Citizen.Wait(10)
+
+		local lPed = GetPlayerPed(-1)
+		local vehicle = GetVehiclePedIsIn(lPed)
+
+		if holdingCam and IsControlJustReleased(1, 244) then
+			movcamera = true
+
+			SetTimecycleModifier("default")
+
+			SetTimecycleModifierStrength(0.3)
+			
+			local scaleform = RequestScaleformMovie("security_camera")
+
+			while not HasScaleformMovieLoaded(scaleform) do
+				Citizen.Wait(10)
+			end
+
+
+			local lPed = GetPlayerPed(-1)
+			local vehicle = GetVehiclePedIsIn(lPed)
+			local cam1 = CreateCam("DEFAULT_SCRIPTED_FLY_CAMERA", true)
+
+			AttachCamToEntity(cam1, lPed, 0.0,0.0,1.0, true)
+			SetCamRot(cam1, 2.0,1.0,GetEntityHeading(lPed))
+			SetCamFov(cam1, fov)
+			RenderScriptCams(true, false, 0, 1, 0)
+			PushScaleformMovieFunction(scaleform, "security_camera")
+			PopScaleformMovieFunctionVoid()
+
+			while movcamera and not IsEntityDead(lPed) and (GetVehiclePedIsIn(lPed) == vehicle) and true do
+				if IsControlJustPressed(0, 177) then
+					PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", false)
+					movcamera = false
+				end
+				
+				SetEntityRotation(lPed, 0, 0, new_z,2, true)
+
+				local zoomvalue = (1.0/(fov_max-fov_min))*(fov-fov_min)
+				CheckInputRotation(cam1, zoomvalue)
+
+				HandleZoom(cam1)
+				HideHUDThisFrame()
+
+				drawRct(UI.x + 0.0, 	UI.y + 0.0, 1.0,0.15,0,0,0,255) -- Top Bar
+				DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
+				drawRct(UI.x + 0.0, 	UI.y + 0.85, 1.0,0.16,0,0,0,255) -- Bottom Bar
+				
+				local camHeading = GetGameplayCamRelativeHeading()
+				local camPitch = GetGameplayCamRelativePitch()
+				if camPitch < -70.0 then
+					camPitch = -70.0
+				elseif camPitch > 42.0 then
+					camPitch = 42.0
+				end
+				camPitch = (camPitch + 70.0) / 112.0
+				
+				if camHeading < -180.0 then
+					camHeading = -180.0
+				elseif camHeading > 180.0 then
+					camHeading = 180.0
+				end
+				camHeading = (camHeading + 180.0) / 360.0
+				
+				Citizen.InvokeNative(0xD5BB4025AE449A4E, GetPlayerPed(-1), "Pitch", camPitch)
+				Citizen.InvokeNative(0xD5BB4025AE449A4E, GetPlayerPed(-1), "Heading", camHeading * -1.0 + 1.0)
+				
+				Citizen.Wait(10)
+			end
+
+			movcamera = false
+			ClearTimecycleModifier()
+			fov = (fov_max+fov_min)*0.5
+			RenderScriptCams(false, false, 0, 1, 0)
+			SetScaleformMovieAsNoLongerNeeded(scaleform)
+			DestroyCam(cam1, false)
+			SetNightvision(false)
+			SetSeethrough(false)
+		end
+	end
+end)
+
+---------------------------------------------------------------------------
+-- News Cam --
 ---------------------------------------------------------------------------
 
 Citizen.CreateThread(function()
@@ -88,7 +181,7 @@ Citizen.CreateThread(function()
 		local vehicle = GetVehiclePedIsIn(lPed)
 
 		if holdingCam and IsControlJustReleased(1, 38) then
-			camera = true
+			newscamera = true
 
 			SetTimecycleModifier("default")
 
@@ -108,28 +201,28 @@ Citizen.CreateThread(function()
 
 			local lPed = GetPlayerPed(-1)
 			local vehicle = GetVehiclePedIsIn(lPed)
-			local cam = CreateCam("DEFAULT_SCRIPTED_FLY_CAMERA", true)
+			local cam2 = CreateCam("DEFAULT_SCRIPTED_FLY_CAMERA", true)
 
-			AttachCamToEntity(cam, lPed, 0.0,0.0,1.0, true)
-			SetCamRot(cam, 2.0,1.0,GetEntityHeading(lPed))
-			SetCamFov(cam, fov)
+			AttachCamToEntity(cam2, lPed, 0.0,0.0,1.0, true)
+			SetCamRot(cam2, 2.0,1.0,GetEntityHeading(lPed))
+			SetCamFov(cam2, fov)
 			RenderScriptCams(true, false, 0, 1, 0)
 			PushScaleformMovieFunction(scaleform, "SET_CAM_LOGO")
 			PushScaleformMovieFunction(scaleform2, "breaking_news")
 			PopScaleformMovieFunctionVoid()
 
-			while camera and not IsEntityDead(lPed) and (GetVehiclePedIsIn(lPed) == vehicle) and true do
-				if IsControlJustPressed(0, 177) then
+			while newscamera and not IsEntityDead(lPed) and (GetVehiclePedIsIn(lPed) == vehicle) and true do
+				if IsControlJustPressed(1, 177) then
 					PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", false)
-					camera = false
+					newscamera = false
 				end
 
 				SetEntityRotation(lPed, 0, 0, new_z,2, true)
 					
 				local zoomvalue = (1.0/(fov_max-fov_min))*(fov-fov_min)
-				CheckInputRotation(cam, zoomvalue)
+				CheckInputRotation(cam2, zoomvalue)
 
-				HandleZoom(cam)
+				HandleZoom(cam2)
 				HideHUDThisFrame()
 
 				DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
@@ -158,12 +251,12 @@ Citizen.CreateThread(function()
 				Citizen.Wait(10)
 			end
 
-			camera = false
+			newscamera = false
 			ClearTimecycleModifier()
 			fov = (fov_max+fov_min)*0.5
 			RenderScriptCams(false, false, 0, 1, 0)
 			SetScaleformMovieAsNoLongerNeeded(scaleform)
-			DestroyCam(cam, false)
+			DestroyCam(cam2, false)
 			SetNightvision(false)
 			SetSeethrough(false)
 		end
@@ -279,6 +372,10 @@ AddEventHandler("Mic:ToggleMic", function()
         usingMic = false
     end
 end)
+
+function drawRct(x,y,width,height,r,g,b,a)
+	DrawRect(x + width/2, y + height/2, width, height, r, g, b, a)
+end
 
 function Breaking(text)
 		SetTextColour(255, 255, 255, 255)
