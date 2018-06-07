@@ -83,7 +83,7 @@ Citizen.CreateThread(function()
 			DisableControlAction(0,37,true) -- INPUT_SELECT_WEAPON
 			SetCurrentPedWeapon(GetPlayerPed(-1), GetHashKey("WEAPON_UNARMED"), true)
 			
-			if (IsPedInAnyVehicle(GetPlayerPed(-1), -1) and GetPedVehicleSeat(GetPlayerPed(-1)) == -1) or IsPedCuffed(GetPlayerPed(-1)) then
+			if (IsPedInAnyVehicle(GetPlayerPed(-1), -1) and GetPedVehicleSeat(GetPlayerPed(-1)) == -1) or IsPedCuffed(GetPlayerPed(-1)) or holdingMic then
 				ClearPedSecondaryTask(GetPlayerPed(-1))
 				DetachEntity(NetToObj(cam_net), 1, 1)
 				DeleteEntity(NetToObj(cam_net))
@@ -104,7 +104,6 @@ local fov_min = 5.0
 local zoomspeed = 10.0
 local speed_lr = 8.0
 local speed_ud = 8.0
-
 local camera = false
 local fov = (fov_max+fov_min)*0.5
 
@@ -336,7 +335,6 @@ end
 function HandleZoom(cam)
 	local lPed = GetPlayerPed(-1)
 	if not ( IsPedSittingInAnyVehicle( lPed ) ) then
-
 		if IsControlJustPressed(0,241) then
 			fov = math.max(fov - zoomspeed, fov_min)
 		end
@@ -406,20 +404,19 @@ Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(0)
 		if holdingMic then
-
 			DisablePlayerFiring(PlayerId(), true)
 			DisableControlAction(0,25,true) -- disable aim
 			DisableControlAction(0, 44,  true) -- INPUT_COVER
 			DisableControlAction(0,37,true) -- INPUT_SELECT_WEAPON
 			SetCurrentPedWeapon(GetPlayerPed(-1), GetHashKey("WEAPON_UNARMED"), true)
 			
-			if (IsPedInAnyVehicle(GetPlayerPed(-1), -1) and GetPedVehicleSeat(GetPlayerPed(-1)) == -1) or IsPedCuffed(GetPlayerPed(-1)) then
+			if (IsPedInAnyVehicle(GetPlayerPed(-1), -1) and GetPedVehicleSeat(GetPlayerPed(-1)) == -1) or IsPedCuffed(GetPlayerPed(-1)) or holdingCam then
 				  ClearPedSecondaryTask(GetPlayerPed(PlayerId()))
-					DetachEntity(NetToObj(mic_net), 1, 1)
-					DeleteEntity(NetToObj(mic_net))
-					mic_net = nil
-					holdingMic = false
-					usingMic = false
+				DetachEntity(NetToObj(mic_net), 1, 1)
+				DeleteEntity(NetToObj(mic_net))
+				mic_net = nil
+				holdingMic = false
+				usingMic = false
 			end
 		end
 	end
@@ -430,16 +427,16 @@ function drawRct(x,y,width,height,r,g,b,a)
 end
 
 function Headline(text)
-		SetTextColour(255, 255, 255, 255)
-		SetTextFont(8)
-		SetTextScale(1.2, 1.2)
-		SetTextWrap(0.0, 1.0)
-		SetTextCentre(false)
-		SetTextDropshadow(0, 0, 0, 0, 255)
-		SetTextEdge(1, 0, 0, 0, 205)
-		SetTextEntry("STRING")
-		AddTextComponentString(text)
-		DrawText(0.2, 0.85)
+	SetTextColour(255, 255, 255, 255)
+	SetTextFont(8)
+	SetTextScale(1.2, 1.2)
+	SetTextWrap(0.0, 1.0)
+	SetTextCentre(false)
+	SetTextDropshadow(0, 0, 0, 0, 255)
+	SetTextEdge(1, 0, 0, 0, 205)
+	SetTextEntry("STRING")
+	AddTextComponentString(text)
+	DrawText(0.2, 0.85)
 end
 
 function Notification(message)
