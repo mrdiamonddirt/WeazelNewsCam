@@ -10,6 +10,7 @@ local micanimDict = "missheistdocksprep1hold_cellphone"
 local micanimName = "hold_cellphone"
 local mic_net = nil
 local cam_net = nil
+local headline_text = "BREAKING NEWS"
 local UI = { 
 	x =  0.000 ,
 	y = -0.001 ,
@@ -22,6 +23,11 @@ function GetPedVehicleSeat(ped)
     end
     return -2
 end
+
+RegisterNetEvent("Head:headline")
+AddEventHandler("Head:headline", function(text)
+	headline_text = text
+end)
 
 ---------------------------------------------------------------------------
 -- Toggling Cam --
@@ -250,7 +256,7 @@ Citizen.CreateThread(function()
 
 				DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
 				DrawScaleformMovie(scaleform2, 0.5, 0.63, 1.0, 1.0, 255, 255, 255, 255)
-				Breaking("BREAKING NEWS")
+				Headline(headline_text)
 				
 				local camHeading = GetGameplayCamRelativeHeading()
 				local camPitch = GetGameplayCamRelativePitch()
@@ -423,7 +429,7 @@ function drawRct(x,y,width,height,r,g,b,a)
 	DrawRect(x + width/2, y + height/2, width, height, r, g, b, a)
 end
 
-function Breaking(text)
+function Headline(text)
 		SetTextColour(255, 255, 255, 255)
 		SetTextFont(8)
 		SetTextScale(1.2, 1.2)
