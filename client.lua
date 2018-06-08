@@ -38,7 +38,7 @@ AddEventHandler("Cam:ToggleCam", function()
         TaskPlayAnim(GetPlayerPed(PlayerId()), camanimDict, camanimName, 1.0, -1, -1, 50, 0, 0, 0, 0)
         cam_net = netid
         holdingCam = true
-		DisplayNotification("To enter News cam press ~INPUT_PICKUP~ To Enter Movie Cam press ~INPUT_INTERACTION_MENU~")
+		DisplayNotification("To enter News cam press ~INPUT_PICKUP~ \nTo Enter Movie Cam press ~INPUT_INTERACTION_MENU~")
     else
         ClearPedSecondaryTask(GetPlayerPed(PlayerId()))
         DetachEntity(NetToObj(cam_net), 1, 1)
@@ -62,6 +62,12 @@ Citizen.CreateThread(function()
 				TaskPlayAnim(GetPlayerPed(PlayerId()), 1.0, -1, -1, 50, 0, 0, 0, 0) -- 50 = 32 + 16 + 2
 				TaskPlayAnim(GetPlayerPed(PlayerId()), camanimDict, camanimName, 1.0, -1, -1, 50, 0, 0, 0, 0)
 			end
+				
+			DisablePlayerFiring(PlayerId(), true)
+			DisableControlAction(0,25,true) -- disable aim
+			DisableControlAction(0, 44,  true) -- INPUT_COVER
+			DisableControlAction(0,37,true) -- INPUT_SELECT_WEAPON
+			SetCurrentPedWeapon(GetPlayerPed(-1), GetHashKey("WEAPON_UNARMED"), true)
 		end
 	end
 end)
