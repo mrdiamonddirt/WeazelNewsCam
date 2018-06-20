@@ -5,7 +5,7 @@ local usingMic = false
 local camModel = "prop_v_cam_01"
 local camanimDict = "missfinale_c2mcs_1"
 local camanimName = "fin_c2_mcs_1_camman"
-local micModel = "prop_microphone_02"
+local micModel = "p_ing_microphonel_01"
 local micanimDict = "missheistdocksprep1hold_cellphone"
 local micanimName = "hold_cellphone"
 local mic_net = nil
@@ -364,7 +364,7 @@ AddEventHandler("Mic:ToggleMic", function()
         SetNetworkIdExistsOnAllMachines(netid, true)
         NetworkSetNetworkIdDynamic(netid, true)
         SetNetworkIdCanMigrate(netid, false)
-        AttachEntityToEntity(micspawned, GetPlayerPed(PlayerId()), GetPedBoneIndex(GetPlayerPed(PlayerId()), 60309), 0.08, 0.03, 0.0, 240.0, 0.0, 0.0, 1, 1, 0, 1, 0, 1)
+        AttachEntityToEntity(micspawned, GetPlayerPed(PlayerId()), GetPedBoneIndex(GetPlayerPed(PlayerId()), 60309), 0.055, 0.05, 0.0, 240.0, 0.0, 0.0, 1, 1, 0, 1, 0, 1)
         TaskPlayAnim(GetPlayerPed(PlayerId()), 1.0, -1, -1, 50, 0, 0, 0, 0) -- 50 = 32 + 16 + 2
         TaskPlayAnim(GetPlayerPed(PlayerId()), micanimDict, micanimName, 1.0, -1, -1, 50, 0, 0, 0, 0)
         mic_net = netid
