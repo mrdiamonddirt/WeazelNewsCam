@@ -2,12 +2,18 @@ local holdingCam = false
 local usingCam = false
 local holdingMic = false
 local usingMic = false
+local holdingBmic = false
+local usingBmic = false
 local camModel = "prop_v_cam_01"
 local camanimDict = "missfinale_c2mcs_1"
 local camanimName = "fin_c2_mcs_1_camman"
 local micModel = "p_ing_microphonel_01"
 local micanimDict = "missheistdocksprep1hold_cellphone"
 local micanimName = "hold_cellphone"
+local bmicModel = "prop_v_bmike_01"
+local bmicanimDict = "missfra1"
+local bmicanimName = "mcs2_crew_idle_m_boom"
+local bmic_net = nil
 local mic_net = nil
 local cam_net = nil
 local UI = { 
@@ -378,6 +384,75 @@ AddEventHandler("Mic:ToggleMic", function()
         usingMic = false
     end
 end)
+
+---------------------------------------------------------------------------
+-- Toggling Boom Mic --
+---------------------------------------------------------------------------
+RegisterNetEvent("Mic:ToggleBMic")
+AddEventHandler("Mic:ToggleBMic", function()
+    if not holdingBmic then
+        RequestModel(GetHashKey(bmicModel))
+        while not HasModelLoaded(GetHashKey(bmicModel)) do
+            Citizen.Wait(100)
+        end
+		
+        local plyCoords = GetOffsetFromEntityInWorldCoords(GetPlayerPed(PlayerId()), 0.0, 0.0, -5.0)
+        local bmicspawned = CreateObject(GetHashKey(bmicModel), plyCoords.x, plyCoords.y, plyCoords.z, true, true, false)
+        Citizen.Wait(1000)
+        local netid = ObjToNet(bmicspawned)
+        SetNetworkIdExistsOnAllMachines(netid, true)
+        NetworkSetNetworkIdDynamic(netid, true)
+        SetNetworkIdCanMigrate(netid, false)
+        AttachEntityToEntity(bmicspawned, GetPlayerPed(PlayerId()), GetPedBoneIndex(GetPlayerPed(PlayerId()), 28422), -0.08, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 1, 0, 1, 0, 1)
+        TaskPlayAnim(GetPlayerPed(PlayerId()), 1.0, -1, -1, 50, 0, 0, 0, 0) -- 50 = 32 + 16 + 2
+        TaskPlayAnim(GetPlayerPed(PlayerId()), bmicanimDict, bmicanimName, 1.0, -1, -1, 50, 0, 0, 0, 0)
+        bmic_net = netid
+        holdingBmic = true
+    else
+        ClearPedSecondaryTask(GetPlayerPed(PlayerId()))
+        DetachEntity(NetToObj(bmic_net), 1, 1)
+        DeleteEntity(NetToObj(bmic_net))
+        bmic_net = nil
+        holdingBmic = false
+        usingBmic = false
+    end
+end)
+
+Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(0)
+		if holdingBmic then
+			while not HasAnimDictLoaded(bmicanimDict) do
+				RequestAnimDict(bmicanimDict)
+				Citizen.Wait(100)
+			end
+
+			if not IsEntityPlayingAnim(PlayerPedId(), bmicanimDict, bmicanimName, 3) then
+				TaskPlayAnim(GetPlayerPed(PlayerId()), 1.0, -1, -1, 50, 0, 0, 0, 0) -- 50 = 32 + 16 + 2
+				TaskPlayAnim(GetPlayerPed(PlayerId()), bmicanimDict, bmicanimName, 1.0, -1, -1, 50, 0, 0, 0, 0)
+			end
+			
+			DisablePlayerFiring(PlayerId(), true)
+			DisableControlAction(0,25,true) -- disable aim
+			DisableControlAction(0, 44,  true) -- INPUT_COVER
+			DisableControlAction(0,37,true) -- INPUT_SELECT_WEAPON
+			SetCurrentPedWeapon(GetPlayerPed(-1), GetHashKey("WEAPON_UNARMED"), true)
+			
+			if (IsPedInAnyVehicle(GetPlayerPed(-1), -1) and GetPedVehicleSeat(GetPlayerPed(-1)) == -1) or IsPedCuffed(GetPlayerPed(-1)) or holdingMic then
+				ClearPedSecondaryTask(GetPlayerPed(-1))
+				DetachEntity(NetToObj(bmic_net), 1, 1)
+				DeleteEntity(NetToObj(bmic_net))
+				bmic_net = nil
+				holdingBmic = false
+				usingBmic = false
+			end
+		end
+	end
+end)
+
+---------------------------------------------------------------------------------------
+-- misc functions --
+---------------------------------------------------------------------------------------
 
 function drawRct(x,y,width,height,r,g,b,a)
 	DrawRect(x + width/2, y + height/2, width, height, r, g, b, a)
