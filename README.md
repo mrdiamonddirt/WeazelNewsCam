@@ -7,6 +7,8 @@ backspace get out of the view finder
 /mic to get a microphone out and pit it away
 you can point to direct it
 
+/bmic to toggle the Boom Mic
+
 Based off https://github.com/xander1998/saw by xlander1998
 with permission to publish
 
