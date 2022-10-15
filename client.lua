@@ -295,38 +295,6 @@ Citizen.CreateThread(function()
 		end
 	end
 end)
--- ShowBreakingNews("heading", "message", 'bottom',5)
-
--- ESX.Scaleform.ShowBreakingNews = function(title, msg, bottom, sec)
--- 	local scaleform = ESX.Scaleform.Utils.RequestScaleformMovie('BREAKING_NEWS')
-
--- 	BeginScaleformMovieMethod(scaleform, 'SET_TEXT')
--- 	PushScaleformMovieMethodParameterString(msg)
--- 	PushScaleformMovieMethodParameterString(bottom)
--- 	EndScaleformMovieMethod()
-
--- 	BeginScaleformMovieMethod(scaleform, 'SET_SCROLL_TEXT')
--- 	PushScaleformMovieMethodParameterInt(0) -- top ticker
--- 	PushScaleformMovieMethodParameterInt(0) -- Since this is the first string, start at 0
--- 	PushScaleformMovieMethodParameterString(title)
-
--- 	EndScaleformMovieMethod()
-
--- 	BeginScaleformMovieMethod(scaleform, 'DISPLAY_SCROLL_TEXT')
--- 	PushScaleformMovieMethodParameterInt(0) -- Top ticker
--- 	PushScaleformMovieMethodParameterInt(0) -- Index of string
-
--- 	EndScaleformMovieMethod()
-
--- 	while sec > 0 do
--- 		Citizen.Wait(1)
--- 		sec = sec - 0.01
-
--- 		DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
--- 	end
-
--- 	SetScaleformMovieAsNoLongerNeeded(scaleform)
--- end
 
 ---------------------------------------------------------------------------
 -- Events --
@@ -508,22 +476,9 @@ end)
 -- misc functions --
 ---------------------------------------------------------------------------------------
 
--- function drawRct(x,y,width,height,r,g,b,a)
--- 	DrawRect(x + width/2, y + height/2, width, height, r, g, b, a)
--- end
-
--- function Breaking(text)
--- 		SetTextColour(255, 255, 255, 255)
--- 		SetTextFont(8)
--- 		SetTextScale(1.2, 1.2)
--- 		SetTextWrap(0.0, 1.0)
--- 		SetTextCentre(false)
--- 		SetTextDropshadow(0, 0, 0, 0, 255)
--- 		SetTextEdge(1, 0, 0, 0, 205)
--- 		SetTextEntry("STRING")
--- 		AddTextComponentString(text)
--- 		DrawText(0.2, 0.85)
--- end
+function drawRct(x,y,width,height,r,g,b,a)
+	DrawRect(x + width/2, y + height/2, width, height, r, g, b, a)
+end
 
 function Notification(message)
 	SetNotificationTextEntry("STRING")
