@@ -208,13 +208,14 @@ Citizen.CreateThread(function()
 				Citizen.Wait(10)
 			end
 
+			GetLocalTime(year,month,day)
 
 			local lPed = GetPlayerPed(-1)
 			local vehicle = GetVehiclePedIsIn(lPed)
 			local cam2 = CreateCam("DEFAULT_SCRIPTED_FLY_CAMERA", true)
 			local msg = "Breaking News"
-			local title = GetTimeAsString(500)
-			local bottom = "Bottom"
+			local title = "7:00 AM / Weazel News Exclusive"
+			local bottom = "We bring you the LATEST NEWS live as it happens"
 
 			AttachCamToEntity(cam2, lPed, 0.0,0.0,1.0, true)
 			SetCamRot(cam2, 2.0,1.0,GetEntityHeading(lPed))
