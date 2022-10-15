@@ -212,8 +212,8 @@ Citizen.CreateThread(function()
 			local lPed = GetPlayerPed(-1)
 			local vehicle = GetVehiclePedIsIn(lPed)
 			local cam2 = CreateCam("DEFAULT_SCRIPTED_FLY_CAMERA", true)
-			local msg = "message"
-			local title = "Title"
+			local msg = "Breaking News"
+			local title = GetTimeAsString(500)
 			local bottom = "Bottom"
 
 			AttachCamToEntity(cam2, lPed, 0.0,0.0,1.0, true)
