@@ -1,7 +1,8 @@
 fx_version 'cerulean'
 game 'gta5'
 
-description 'WeazelNewsCam'
+name 'WeazelNewsCam'
+description 'https://github.com/mrdiamonddirt/WeazelNewsCam'
 author 'RowDog'
 version '1.0.1'
 
