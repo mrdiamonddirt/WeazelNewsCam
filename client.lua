@@ -508,9 +508,9 @@ end)
 -- misc functions --
 ---------------------------------------------------------------------------------------
 
--- function drawRct(x,y,width,height,r,g,b,a)
--- 	DrawRect(x + width/2, y + height/2, width, height, r, g, b, a)
--- end
+function drawRct(x,y,width,height,r,g,b,a)
+	DrawRect(x + width/2, y + height/2, width, height, r, g, b, a)
+end
 
 -- function Breaking(text)
 -- 		SetTextColour(255, 255, 255, 255)
