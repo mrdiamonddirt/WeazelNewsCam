@@ -29,12 +29,12 @@ AddEventHandler("Cam:ToggleCam", function()
     if not holdingCam then
         RequestModel(GetHashKey(camModel))
         while not HasModelLoaded(GetHashKey(camModel)) do
-            Citizen.Wait(100)
+            Wait(100)
         end
 		
         local plyCoords = GetOffsetFromEntityInWorldCoords(GetPlayerPed(PlayerId()), 0.0, 0.0, -5.0)
         local camspawned = CreateObject(GetHashKey(camModel), plyCoords.x, plyCoords.y, plyCoords.z, 1, 1, 1)
-        Citizen.Wait(1000)
+        Wait(1000)
         local netid = ObjToNet(camspawned)
         SetNetworkIdExistsOnAllMachines(netid, true)
         NetworkSetNetworkIdDynamic(netid, true)
@@ -55,13 +55,13 @@ AddEventHandler("Cam:ToggleCam", function()
     end
 end)
 
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
-		Citizen.Wait(0)
+		   Wait(0)
 		if holdingCam then
 			while not HasAnimDictLoaded(camanimDict) do
 				RequestAnimDict(camanimDict)
-				Citizen.Wait(100)
+				Wait(100)
 			end
 
 			if not IsEntityPlayingAnim(PlayerPedId(), camanimDict, camanimName, 3) then
@@ -95,11 +95,9 @@ local fov = (fov_max+fov_min)*0.5
 -- Movie Cam --
 ---------------------------------------------------------------------------
 
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
-
-		Citizen.Wait(10)
-
+		    Wait(10)
 		local lPed = GetPlayerPed(-1)
 		local vehicle = GetVehiclePedIsIn(lPed)
 
@@ -113,7 +111,7 @@ Citizen.CreateThread(function()
 			local scaleform = RequestScaleformMovie("security_camera")
 
 			while not HasScaleformMovieLoaded(scaleform) do
-				Citizen.Wait(10)
+				Wait(10)
 			end
 
 
@@ -165,7 +163,7 @@ Citizen.CreateThread(function()
 				Citizen.InvokeNative(0xD5BB4025AE449A4E, GetPlayerPed(-1), "Pitch", camPitch)
 				Citizen.InvokeNative(0xD5BB4025AE449A4E, GetPlayerPed(-1), "Heading", camHeading * -1.0 + 1.0)
 				
-				Citizen.Wait(10)
+				  Wait(10)
 			end
 
 			movcamera = false
@@ -184,11 +182,9 @@ end)
 -- News Cam --
 ---------------------------------------------------------------------------
 
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
-
-		Citizen.Wait(10)
-
+		 Wait(10)
 		local lPed = GetPlayerPed(-1)
 		local vehicle = GetVehiclePedIsIn(lPed)
 
@@ -202,10 +198,10 @@ Citizen.CreateThread(function()
 			local scaleform = RequestScaleformMovie("security_camera")
 			local scaleform2 = RequestScaleformMovie("breaking_news")
 			while not HasScaleformMovieLoaded(scaleform) do
-				Citizen.Wait(10)
+				Wait(10)
 			end
 			while not HasScaleformMovieLoaded(scaleform2) do
-				Citizen.Wait(10)
+				Wait(10)
 			end
 
 			GetLocalTime(year,month,day)
@@ -224,24 +220,19 @@ Citizen.CreateThread(function()
 			PushScaleformMovieFunction(scaleform, "SET_CAM_LOGO")
 			PopScaleformMovieFunctionVoid()
 			PushScaleformMovieFunction(scaleform2, "breaking_news")
-        	PopScaleformMovieFunctionVoid()
-
+        		PopScaleformMovieFunctionVoid()
 			BeginScaleformMovieMethod(scaleform2, 'SET_TEXT')
 			PushScaleformMovieMethodParameterString(msg)
 			PushScaleformMovieMethodParameterString(bottom)
 			EndScaleformMovieMethod()
-		
 			BeginScaleformMovieMethod(scaleform2, 'SET_SCROLL_TEXT')
 			PushScaleformMovieMethodParameterInt(0) -- top ticker
 			PushScaleformMovieMethodParameterInt(0) -- Since this is the first string, start at 0
 			PushScaleformMovieMethodParameterString(title)
-		
 			EndScaleformMovieMethod()
-		
 			BeginScaleformMovieMethod(scaleform2, 'DISPLAY_SCROLL_TEXT')
 			PushScaleformMovieMethodParameterInt(0) -- Top ticker
 			PushScaleformMovieMethodParameterInt(0) -- Index of string
-		
 			EndScaleformMovieMethod()
 
 			while newscamera and not IsEntityDead(lPed) and (GetVehiclePedIsIn(lPed) == vehicle) and true do
@@ -280,10 +271,8 @@ Citizen.CreateThread(function()
 				
 				Citizen.InvokeNative(0xD5BB4025AE449A4E, GetPlayerPed(-1), "Pitch", camPitch)
 				Citizen.InvokeNative(0xD5BB4025AE449A4E, GetPlayerPed(-1), "Heading", camHeading * -1.0 + 1.0)
-				
-				Citizen.Wait(10)
+				Wait(10)
 			end
-
 			newscamera = false
 			ClearTimecycleModifier()
 			fov = (fov_max+fov_min)*0.5
@@ -319,7 +308,7 @@ end)
 -- 	EndScaleformMovieMethod()
 
 -- 	while sec > 0 do
--- 		Citizen.Wait(1)
+-- 		   Wait(1)
 -- 		sec = sec - 0.01
 
 -- 		DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
@@ -409,17 +398,17 @@ AddEventHandler("Mic:ToggleMic", function()
     if not holdingMic then
         RequestModel(GetHashKey(micModel))
         while not HasModelLoaded(GetHashKey(micModel)) do
-            Citizen.Wait(100)
+             Wait(100)
         end
 		
 		while not HasAnimDictLoaded(micanimDict) do
 			RequestAnimDict(micanimDict)
-			Citizen.Wait(100)
+			Wait(100)
 		end
 
         local plyCoords = GetOffsetFromEntityInWorldCoords(GetPlayerPed(PlayerId()), 0.0, 0.0, -5.0)
         local micspawned = CreateObject(GetHashKey(micModel), plyCoords.x, plyCoords.y, plyCoords.z, 1, 1, 1)
-        Citizen.Wait(1000)
+        Wait(1000)
         local netid = ObjToNet(micspawned)
         SetNetworkIdExistsOnAllMachines(netid, true)
         NetworkSetNetworkIdDynamic(netid, true)
@@ -447,12 +436,12 @@ AddEventHandler("Mic:ToggleBMic", function()
     if not holdingBmic then
         RequestModel(GetHashKey(bmicModel))
         while not HasModelLoaded(GetHashKey(bmicModel)) do
-            Citizen.Wait(100)
+            	Wait(100)
         end
 		
         local plyCoords = GetOffsetFromEntityInWorldCoords(GetPlayerPed(PlayerId()), 0.0, 0.0, -5.0)
         local bmicspawned = CreateObject(GetHashKey(bmicModel), plyCoords.x, plyCoords.y, plyCoords.z, true, true, false)
-        Citizen.Wait(1000)
+        Wait(1000)
         local netid = ObjToNet(bmicspawned)
         SetNetworkIdExistsOnAllMachines(netid, true)
         NetworkSetNetworkIdDynamic(netid, true)
@@ -472,13 +461,13 @@ AddEventHandler("Mic:ToggleBMic", function()
     end
 end)
 
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
-		Citizen.Wait(0)
+		Wait(0)
 		if holdingBmic then
 			while not HasAnimDictLoaded(bmicanimDict) do
 				RequestAnimDict(bmicanimDict)
-				Citizen.Wait(100)
+				Wait(100)
 			end
 
 			if not IsEntityPlayingAnim(PlayerPedId(), bmicanimDict, bmicanimName, 3) then
