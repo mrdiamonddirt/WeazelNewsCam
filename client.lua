@@ -163,7 +163,7 @@ CreateThread(function()
 				Citizen.InvokeNative(0xD5BB4025AE449A4E, GetPlayerPed(-1), "Pitch", camPitch)
 				Citizen.InvokeNative(0xD5BB4025AE449A4E, GetPlayerPed(-1), "Heading", camHeading * -1.0 + 1.0)
 				
-				  Wait(10)
+				  Wait(1)
 			end
 
 			movcamera = false
@@ -271,7 +271,7 @@ CreateThread(function()
 				
 				Citizen.InvokeNative(0xD5BB4025AE449A4E, GetPlayerPed(-1), "Pitch", camPitch)
 				Citizen.InvokeNative(0xD5BB4025AE449A4E, GetPlayerPed(-1), "Heading", camHeading * -1.0 + 1.0)
-				Wait(10)
+				Wait(1)
 			end
 			newscamera = false
 			ClearTimecycleModifier()
