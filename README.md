@@ -18,6 +18,6 @@ backspace get out of the view finder
 to get a microphone out and put it away
 you can point to direct it
 ```
-/bmicto
+/bmic
 ```
 toggle the Boom Mic
